@@ -1,0 +1,14 @@
+.git
+**/.git
+**/node_modules
+**/.next
+**/.open-next
+**/dist
+**/build
+**/*.log
+**/.env
+**/.env.*
+e2e
+word-addin
+docs
+backend/src/__tests__

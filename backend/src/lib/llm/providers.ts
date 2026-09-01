@@ -31,6 +31,20 @@ const OPENCODE_GO_BASE_URL =
 const VERCEL_GATEWAY_BASE_URL =
   process.env.VERCEL_AI_GATEWAY_BASE_URL?.trim().replace(/\/+$/, "");
 
+/**
+ * Zero Data Retention organizations never persist Responses API items, so the
+ * stored-item references the SDK would otherwise replay from an earlier tool
+ * step ("Item with id 'rs_...' not found") fail every request after the first.
+ * Mike's tool loop reads documents before answering, so nearly every attachment
+ * turn hits that second request. `store: false` sends full content instead of
+ * references, and the encrypted reasoning item carries reasoning across steps
+ * without server-side state. Both are safe for non-ZDR organizations.
+ */
+const OPENAI_RESPONSES_OPTIONS = {
+  store: false,
+  include: ["reasoning.encrypted_content"],
+};
+
 type CompleteProviderParams = {
   model: string;
   systemPrompt?: string;
@@ -244,6 +258,7 @@ async function createProviderAdapter(
       model: openai.responses(model),
       modelId: model,
       courtlistenerCitationReminder: true,
+      providerOptions: { openai: OPENAI_RESPONSES_OPTIONS },
     };
   }
 

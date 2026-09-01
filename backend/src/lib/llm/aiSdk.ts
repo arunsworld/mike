@@ -136,6 +136,8 @@ export type AiSdkAdapterConfig = {
   supportsReasoning?: boolean;
   /** OpenAI's CourtListener tools require an extra instruction after use. */
   courtlistenerCitationReminder?: boolean;
+  /** Provider-specific request fields sent on every call for this adapter. */
+  providerOptions?: Record<string, Record<string, AiSdk.JSONValue>>;
 };
 
 type PendingToolExecution = {
@@ -278,6 +280,7 @@ export async function streamAiSdk(
       maxOutputTokens: MAX_OUTPUT_TOKENS,
       stopWhen: sdk.stepCountIs(params.maxIterations ?? 10),
       abortSignal: params.abortSignal,
+      providerOptions: config.providerOptions,
       reasoning:
         config.supportsReasoning === false
           ? undefined
@@ -388,6 +391,7 @@ export async function completeAiSdkText(
     prompt: params.user,
     maxOutputTokens: params.maxTokens ?? 512,
     reasoning: config.supportsReasoning === false ? undefined : "none",
+    providerOptions: config.providerOptions,
   });
   return result.text;
 }

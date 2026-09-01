@@ -94,7 +94,7 @@ export function AskInputPopup({
 
     const firstUnresolvedId = useCallback(
         (resolvedId?: string) =>
-            event.items.find((item) => {
+            event.items.find((item: AskInputItem) => {
                 if (item.id === resolvedId) return false;
                 return !itemResolved(item);
             })?.id ?? null,
@@ -187,7 +187,7 @@ export function AskInputPopup({
     const canSubmit = !submitted && allResolved && !!onSubmit;
 
     const buildResponse = (): AskInputsResponse => {
-        const responses = event.items.map((item) => {
+        const responses = event.items.map((item: AskInputItem) => {
             if (skipped.has(item.id)) {
                 if (item.kind === "documents") {
                     return {
@@ -225,7 +225,7 @@ export function AskInputPopup({
         const responseById = new Map(
             response.responses.map((item) => [item.id, item]),
         );
-        const docs = event.items.flatMap((item) => {
+        const docs = event.items.flatMap((item: AskInputItem) => {
             const responseItem = responseById.get(item.id);
             if (
                 item.kind !== "documents" ||
@@ -298,7 +298,8 @@ export function AskInputPopup({
     if (dismissed) return null;
 
     const activeItem =
-        event.items.find((item) => item.id === activeInputId) ?? event.items[0];
+        event.items.find((item: AskInputItem) => item.id === activeInputId) ??
+        event.items[0];
 
     return (
         <>
@@ -312,7 +313,7 @@ export function AskInputPopup({
                                 "Inputs sent"
                             ) : (
                                 <div className="flex flex-wrap gap-x-1.5 gap-y-1">
-                                    {event.items.map((item) => {
+                                    {event.items.map((item: AskInputItem) => {
                                         const isActive =
                                             item.id === activeItem?.id;
                                         const isResolved = itemResolved(item);
